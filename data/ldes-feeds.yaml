@@ -1,0 +1,22 @@
+feeds:
+  bodc-P02:
+    url: https://kgfixed.github.io/vocab.nerc.ac.uk/P02/latest.ttl
+    environment:
+      MATERIALIZE: "false"
+      FOLLOW: "false"
+      OPERATION_MODE: "Replication"
+      MEMBER_BATCH_SIZE: "1000"
+  bodc-P06:
+    url: https://kgfixed.github.io/vocab.nerc.ac.uk/P06/latest.ttl
+    environment:
+      MATERIALIZE: "false"
+      FOLLOW: "false"
+      OPERATION_MODE: "Replication"
+      MEMBER_BATCH_SIZE: "1000"
+  bodc-P02-nerc:
+    url: http://vocab.nerc.ac.uk/ldes/P02/
+    environment:
+      MATERIALIZE: "false"
+      FOLLOW: "false"
+      OPERATION_MODE: "Replication"
+      MEMBER_BATCH_SIZE: "1000"

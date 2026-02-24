@@ -1,0 +1,36 @@
+# this is a sample docker-compose of how to use kgap microservices
+# it functions as (1) a list of images to be build, (2) a usage-example and (3) a quick-test
+name: ${COMPOSE_PROJECT_NAME:-kgap}
+# -----------------------------------------------------------------------
+services: 
+  graphdb:
+    image: ${REG_NS:-kgap}/kgap_graphdb:${BUILD_TAG:-latest}
+    container_name: test_kgap_graphdb
+    env_file:
+      - ./.env
+    environment: 
+      - GDB_JAVA_OPTS=-Xms4g -Xmx8g -Dcom.ontotext.graphdb.monitoring.jmx=true
+    ports:
+      - 7200:7200     # HTTP
+    cpus: 4
+    volumes:
+      - ./data:/data
+      - ./data/graphdb-import:/root/graphdb-import/data
+
+  ldes-consumer:
+    build:
+      context: ./ldes-consumer
+    container_name: test_kgap_ldes_consumer
+    volumes:
+      - "./data:/data"
+      - "/var/run/docker.sock:/var/run/docker.sock"  # Required to spawn docker containers
+    env_file:
+      - ./.env
+    environment:
+      DOCKER_NETWORK: ${COMPOSE_PROJECT_NAME:-kgap}_default
+      HOST_PWD: ${PWD}
+      DEFAULT_SPARQL_ENDPOINT: "http://graphdb:7200/repositories/${GDB_REPO:-kgap}/statements" # for updates
+      GRAPH_PREFIX: "ldes"  # Prefix for target graph URNs (urn:kgap:{prefix}:{feedname})
+    depends_on:
+      graphdb:
+        condition: service_healthy
